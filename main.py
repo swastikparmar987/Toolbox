@@ -4,40 +4,35 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 from tkinter.filedialog import * # importing everything from filedialog
-import mysql.connector as ms
+import mysql.connector as mysql
 import random
 import webbrowser
+
+bg_colour = '#242424'
+txt_cover = '#2e95fd'
 #-----------------------------------------------------------------------------------------------------------------------------------------'
 
 #function for registration
 def register():
-    username_value = username.get()   # getting username from entry (username) taken from the user   
-    password_value = password.get()   # getting password from entry (password) taken from the user
-    phone_value = phonenum.get()      # getting phone number from entry (phonenum) take from the user
-    
-    if username_value == "":           #if username_field is empty 
-        messagebox.showerror("Error", "Username cannot be empty!") 
+    username_value = username.get()
+    password_value = password.get()
+
+    if username_value == "Enter User Name":
+        messagebox.showerror("Error", "Username cannot be empty!")
         return
-    if password_value == "":           # if password_value field is empty
+    if password_value == "Enter password":
         messagebox.showerror("Error", "Password cannot be empty!")
         return
-    if phone_value == "":              # if phone_value (entry field)
-        messagebox.showerror("Error", "Phone number cannot be empty")
-        return
-    if len(phone_value) != 10 or not phone_value.isdigit(): # if length of phone number exceeds or if there are other characters other then num.
-        messagebox.showerror("Error", "Phone Number must contain 10 numbers\nand only numbers are allowed, no other characters")
-        return
-    
-#connection
+
     try:
-        my_connection = ms.connect(
+        my_connection = mysql.connect(
             host="localhost",
             user="root",
             password="123456789",
             database="project"
         )
         cur = my_connection.cursor()
-        
+
         check_query = "SELECT * FROM logins WHERE username = '{}'".format(username_value)
         cur.execute(check_query)
         if cur.fetchone():
@@ -46,15 +41,15 @@ def register():
             my_connection.close()
             return
 
-        insert_query = "INSERT INTO logins VALUES ('{}', '{}', '{}')".format(username_value, password_value, phone_value)
+        insert_query = "INSERT INTO logins VALUES ('{}', '{}')".format(username_value, password_value)
         cur.execute(insert_query)
-        my_connection.commit() 
+        my_connection.commit()
         messagebox.showinfo("Success", "Registration successful!")
         cur.close()
-        my_connection.close()  
+        my_connection.close()
         menu()
 
-    except Exception as e: 
+    except Exception as e:
         messagebox.showerror("ERROR", "An error occurred while registering.")
 
 
@@ -62,27 +57,24 @@ def register():
 def login():
     username_value = username.get()
     password_value = password.get()
-    phone_value = phonenum.get()
     if username_value == "":
         messagebox.showwarning("Warning!", "Please enter a valid Username.")
         return
-    if password_value == "":
-        messagebox.showwarning("Warning!" ,"Please enter your Password.")
-        return
-    if phone_value == "":
-        messagebox.showwarning("Warning" , "Please enter a phone number")
         return
     if username.get() == password.get():
         messagebox.showwarning("Warning !" , "Username and password cannot be the same")
+        
+    if password.get() == "":
+        messagebox.showerror("Please Enter a password (recommended : 8 characters) : ")
 
-    my_connection = ms.connect(
+    my_connection = mysql.connect(
         host="localhost",
         user="root",
         password="123456789",
         database="project"
     )
     cur = my_connection.cursor()
-    query = "SELECT * FROM logins WHERE username = '{}' AND password = '{}' AND phone_number = '{}'".format(username_value, password_value, phone_value)
+    query = "SELECT * FROM logins WHERE username = '{}' AND password = '{}'".format(username_value, password_value)
     cur.execute(query)
     if cur.fetchone():
         messagebox.showinfo("Nice work !", "Logged in successfully !")
@@ -99,9 +91,9 @@ def login():
 def menu():
     r1 = Tk()
     r1.geometry("900x540")
-    r1['bg'] = '#0099ff' # for the window background
+    r1['bg'] = '#242424' # for the window background
     r1.title("APPS")   
-    l1 = Label(r1 , text = "Tools" , font = ("comicsans" , 50 , "bold") , fg = "white" , bg = '#0099ff')
+    l1 = Label(r1 , text = "Tools" , font = ("Bebas Neue" , 70 , "bold") , fg = "white" , bg = '#242424')
     l1.pack()
     button = { 
         'fg' : "black" ,  
@@ -122,10 +114,13 @@ def menu():
     b4 = Button(r1 ,text = "Website searcher" , **button , command = website_Search_app )
     b4.place(x = 500 , y =290 )
     r1.mainloop()
+
+
     
 #---------------------------------------------------------------------------------------------------------------------------------------------'
 
 # CALCULATOR
+
 
 def calc():
     root = Tk()
@@ -155,6 +150,7 @@ def calc():
         
         
     btn1 = Button(root , text = "1" ,  padx = 40 , pady = 20 , border=10  , bg = "#E8E8E8",font = ("lucida" , 20 , "bold"),command = lambda : inputt(1)) #E8E8E8 is Plantinum
+    
     btn2 = Button(root , text = "2" ,  padx = 40 , pady = 20 , border=10 , bg = "#E8E8E8",font = ("lucida" , 20 , "bold"),command = lambda : inputt(2))
     btn3 = Button(root , text = "3" ,  padx = 40 , pady = 20 , border=10 , bg = "#E8E8E8",font = ("lucida" , 20 , "bold"),command= lambda : inputt(3))
     btn4 = Button(root , text = "4" ,  padx = 40 , pady = 20 , border=10 , bg = "#E8E8E8",font = ("lucida" , 20 , "bold"),command= lambda : inputt(4))
@@ -164,12 +160,12 @@ def calc():
     btn8 = Button(root , text = "8" ,  padx = 40 , pady = 20 , border = 10 , bg = "#E8E8E8",font = ("lucida" , 20 , "bold"),command= lambda: inputt(8))
     btn9 = Button(root , text = "9" ,  padx = 40 , pady = 20 , border = 10 , bg = "#E8E8E8",font = ("lucida" , 20 , "bold"),command= lambda : inputt(9))
     btn0 = Button(root , text = "0" , padx = 40 , pady = 20 , border = 10 , bg = "#E8E8E8",font = ("lucida" , 20 , "bold"),command= lambda : inputt(0))
-    btn_add = Button(root , text = "+" , padx = 40 , pady = 20 , border=10 , bg="#800080", fg = "white" ,  font = ("lucida" , 20 , "bold"), command=lambda:inputt('+'))
-    btn_mult = Button(root , text = "x" , padx = 40 , pady = 20 , border=10 ,bg="#800080", fg = "white"  ,font = ("lucida" , 20 , "bold"),command=lambda:inputt('*'))
-    btn_sub = Button(root , text = "-" , padx = 40 , pady = 20 , border=10 ,bg="#800080", fg = "white", font = ("lucida" , 20 , "bold"),command=lambda:inputt('-'))
-    btn_div = Button(root , text = "/" , padx = 40 , pady = 20 , border=10 , bg="#800080", fg = "white", font = ("lucida" , 20 , "bold"),command=lambda:inputt('/'))
-    btn_clear = Button(root , text = "C" , padx = 40 , pady = 20 , border=10 ,bg="#800080", fg = "white" ,font = ("lucida" , 20 , "bold"), command=clear)
-    btn_equal = Button(root , text = "=" , padx = 180 , pady = 20 , border=10 , bg="#800080", fg = "white" ,font = ("lucida" , 20 , "bold"),command=equal)
+    btn_add = Button(root , text = "+" , padx = 40 , pady = 20 , border=10 , bg="#2e95fd", fg = "white" ,  font = ("lucida" , 20 , "bold"), command=lambda:inputt('+'))
+    btn_mult = Button(root , text = "x" , padx = 40 , pady = 20 , border=10 ,bg="#2e95fd", fg = "white"  ,font = ("lucida" , 20 , "bold"),command=lambda:inputt('*'))
+    btn_sub = Button(root , text = "-" , padx = 40 , pady = 20 , border=10 ,bg="#2e95fd", fg = "white", font = ("lucida" , 20 , "bold"),command=lambda:inputt('-'))
+    btn_div = Button(root , text = "/" , padx = 40 , pady = 20 , border=10 , bg="#2e95fd", fg = "white", font = ("lucida" , 20 , "bold"),command=lambda:inputt('/'))
+    btn_clear = Button(root , text = "C" , padx = 40 , pady = 20 , border=10 ,bg="#2e95fd", fg = "white" ,font = ("lucida" , 20 , "bold"), command=clear)
+    btn_equal = Button(root , text = "=" , padx = 180 , pady = 20 , border=10 , bg="#2e95fd", fg = "white" ,font = ("lucida" , 20 , "bold"),command=equal)
     btn1.grid(row=3 , column=0)
     btn2.grid(row=3 , column=1)
     btn3.grid(row=3 , column=2)
@@ -187,6 +183,7 @@ def calc():
     btn_clear.grid(row = 4 , column = 2)
     btn_equal.grid(row =6  ,columnspan= 4 )
     root.mainloop()
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------'
 # NOTEPAD (Not with all functionalities)
 
@@ -246,7 +243,7 @@ def Notepad():
 
     helpp = Menu(navbar , tearoff = 0)
     navbar.add_cascade(label = "Help" , menu = helpp)
-    helpp.add_command(label = "Help" , command = hellp)
+    helpp.add_command(label = "Help" , command = helpp)
 
 
     root.config(menu=navbar)
@@ -326,7 +323,7 @@ def website_Search_app():
     def search():
         url_to_search = url.get()
         webbrowser.register('chrome', None , webbrowser.BackgroundBrowser("C:\Program Files\Google\Chrome\Application\chrome.exe"))
-        webbrowser.get('chrome').open(url_to_search)
+        webbrowser.get('chrome').open('https://www.google.com/search?q='+url_to_search)
         print("You searched :  " +  url.get())
 
 
@@ -349,47 +346,125 @@ def website_Search_app():
     searchbtn = Button(centre_frame , text = 'Search' , border = 0 ,  bg = '#1a58ff' , fg = 'white' , activebackground = 'white' , padx = 100 , pady = 7 , font = ("Bhanschrift SemiBold" , 14 , 'bold') , command = search )
     searchbtn.place(x = 140 , y = 300)
 
-
-
 # ------------------------------------------------------------------------------------------------------------------------------------------------- 
-#GUI for the sign in window 
+#GUI for the log in window 
                           
-window = Tk()
-window.configure(bg="#0099cc")
-window.title("Sign in to continue...")
-window.geometry('550x540')
 
 
-head = Label(window, text="Sign In", fg="#FFFFFF", bg="#0099cc", font=("Microsoft YaHei UI light", 28, 'bold'))
-head.place(x=60, y=30)
+def login_():
+    bg_colour = '#242424'
+    txt_cover = '#2e95fd'
 
-head2 = Label(window , text = "Welcome in toolbox" , fg = "black" , bg = '#0099cc',  font=("Microsoft YaHei UI light" , 12 ,'bold' ))
-head2.place(x = 60 , y = 85)
 
-user_name = Label(window, text="USERNAME", bg="#0099cc", fg="#FFFFFF", font=("Microsoft YaHei UI light", 14, "bold"))
-user_name.place(x=40, y=120)
+    mysqlcon = mysql.connect(host = 'localhost' , user = 'root' , password = "123456789" , database = 'project')
+    cursor_object = mysqlcon.cursor()
 
-pass_word = Label(window, text="PASSWORD", bg="#0099cc", fg="#FFFFFF", font=("Microsoft YaHei UI light", 14, 'bold'))
-pass_word.place(x=40, y=200)
+    def Checking_userInputs():
+        username_value = user_name.get()
+        Password_value = password.get()
+        print(username_value , Password_value)
+        sql_query = 'select * from sign_up_data'
+        cursor_object.execute(sql_query)
+        User_login_Data_from_sql = cursor_object.fetchall()
+        print(cursor_object)
+        for userid_fromsql,passkey_fromsql in User_login_Data_from_sql:
+            print(userid_fromsql,passkey_fromsql)
+            if (username_value,Password_value) == (userid_fromsql,passkey_fromsql):
+                print('login sucessfully')
+                menu()
+                return None
+        else:
+              
+            messagebox.showerror("Invalid Input" , "Invalid Input")
+        
+    root =Tk()
+    root.title("login")
+    root.geometry('925x500+300+200')
+    root.configure(bg = bg_colour)
+    root.resizable(False, False)
 
-phone = Label(window ,text = "PHONE NUMBER" , bg = "#0099cc" , fg = "#FFFFFF" , font = ("Microsoft YaHei UI light" , 14 , "bold") )
-phone.place(x = 40 , y = 290 )
+    #left_frame
 
-username = Entry(window, width=30 ,font=("Helvetica", 20), bg="#FFFFFF", fg="#000000", bd=0)
-username.place(x=40, y=150)
+    left_frame = Frame(root, width = 350, height = 470, bg = bg_colour)
+    left_frame.place(x = 10, y = 10)
+    Border_frame = Frame(root, width = 1, height = 320, bg = 'white')
+    Border_frame.place(x = 370 , y = 30 )
+    welcome_back = Label(left_frame , text = "Welcome back" , bg = bg_colour , fg = txt_cover , font = ("Bebas Neue" , 40 , 'bold'))
+    welcome_back.place(x = 55, y = 100)
+    Startyourjourneytoday = Label(left_frame , text = "Start Your Journey Today" , bg = bg_colour , fg = '#fff' , font = ("Microsoft YaHei UI light" , 15 ))
+    Startyourjourneytoday.place(x = 70 , y = 160)
+    sign_up_btn = Button(left_frame , text = 'sign up' , border = 0 ,  bg = txt_cover , fg = 'white' , activebackground = 'white' , padx = 50 , pady = 7 , font = ("Bhanschrift SemiBold" , 14 , 'bold') , command = register)
+    sign_up_btn.place(x = 90 , y = 230)
+    #left_frame_ends
 
-password = Entry(window, width=30, show='*', font=("Microsoft YaHei UI light", 20), bg="#FFFFFF", fg="#000000", bd=0 , relief="ridge")
-password.place(x=40, y=230)
+    #right_frame
+    
+    Right_frame = Frame(root, width = 500, height = 450, bg = bg_colour)
+    Right_frame.place(x = 380, y = 10)
+    login = Label(Right_frame , text = "Login" , bg = bg_colour , fg = txt_cover , font = ("Bebas Neue" , 38 ))
+    login.place(x = 200 , y = 20 )
 
-phonenum = Entry(window , width= 30 ,font = ("Microsoft YaHei UI light" , 20) , bg = "#FFFFFF" , fg = "#000000" , bd = 0 , relief = "ridge" )
-phonenum.place(x = 40 , y = 320)
+    #taking the enteries from the user
+    #taking user name from the user
+    
+    user_name = Entry(Right_frame , width = 19 , border = 0 , fg = 'white' , bg = bg_colour , font = ("Microsoft YaHei UI light" , 12))
+    user_name.place(x = 130 , y = 150)
+    user_name.insert(0 , 'Enter User Name')
+    frame_to_underline = Frame(Right_frame , width = 280 , height = 2, bg = 'white')
+    frame_to_underline.place(x = 120 , y = 180)
 
-login_button = Button(window, text="Login", bg="Green", fg="#FFFFFF", command=login, width="10", height="3",font=("Microsoft YaHei UI light", 12, "bold"),
-                      borderwidth=10)
-login_button.place(x=80, y=400)
+    #taking the password
+    password = Entry(Right_frame , width = 19 , border = 0 , fg = 'white' , bg = bg_colour , font = ("Microsoft YaHei UI light" , 12))
+    password.place(x = 130 , y = 230)
+    password.insert(0 , 'Enter password')
+    frame_to_underline = Frame(Right_frame , width = 280 , height = 2, bg = 'white')
+    frame_to_underline.place(x = 120 , y = 255)
 
-submit_button = Button(window, text="Sign Up", bg="red", fg="#FFFFFF", command=register, width="10", height="3",font=("Microsoft YaHei UI light", 12, "bold"), bd=0,
-                       borderwidth=10)
-submit_button.place(x=320, y=400)
+    # login button
 
-window.mainloop()
+    login = Button(Right_frame , text = 'Login' , border = 0 ,  bg = txt_cover , fg = 'white' , activebackground = 'white' , padx = 100 , pady = 7 , font = ("Bhanschrift SemiBold" , 14 , 'bold') , command  = Checking_userInputs)
+    login.place(x = 120 , y = 300)
+    root.mainloop
+    
+#sign_up
+root =Tk()
+root.title("login")
+root.geometry('925x500+300+200')
+root.configure(bg = bg_colour)
+root.resizable(False, False)
+centre_frame = Frame(root, width = 1100, height = 470, bg = bg_colour)
+centre_frame.place(x = 10, y = 10)
+welcome_back = Label(centre_frame , text = "Sign In" , bg = bg_colour , fg = txt_cover , font = ("Bebas Neue" , 48 , 'bold'))
+welcome_back.place(x = 385, y = 10)
+#taking user name from the user
+username = Entry(centre_frame , width = 19 , border = 0 , fg = 'white' , bg = bg_colour , font = ("Microsoft YaHei UI light" , 12))
+username.place(x = 365 , y = 150)
+username.insert(0 , 'Enter User Name')
+frame_to_underline = Frame(centre_frame , width = 280 , height = 2, bg = 'white')
+frame_to_underline.place(x = 325 , y = 180)
+#taking the password
+password = Entry(centre_frame , width = 19 , border = 0 , fg = 'white' , bg = bg_colour , font = ("Microsoft YaHei UI light" , 12))
+password.place(x = 365 , y = 230)
+password.insert(0 , 'Enter password')
+frame_to_underline = Frame(centre_frame , width = 280 , height = 2, bg = 'white')
+frame_to_underline.place(x = 325 , y = 255)
+# Sign_in button
+
+Sign_in_btn = Button(centre_frame , text = 'Sign In' , border = 0 ,  bg = txt_cover , fg = 'white' , activebackground = 'white' , padx = 100 , pady = 7 , font = ("Bhanschrift SemiBold" , 14 , 'bold')  , command = register )
+Sign_in_btn.place(x = 330 , y = 300)
+    #login
+
+For_login = Label(centre_frame , text = "Already have an Account?" , bg = bg_colour , fg = "white" , font = ("Bebas Neue" , 16))
+For_login.place(x = 375, y = 350)
+    #login_btn
+login = Button(centre_frame , text = 'Login' , border = 0 ,  bg = bg_colour , fg = txt_cover , activebackground = 'white' , padx = 0 , pady = 0 , font = ("Bhanschrift SemiBold" , 14 , 'bold') , command = login)
+login.place(x = 560 , y = 350)
+
+
+
+
+
+root.mainloop()
+
+
+
