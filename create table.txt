@@ -1,4 +1,4 @@
-CREATE TABLE  logins (
-    USERNAME VARCHAR(20) UNIQUE,
-    PASSWORD VARCHAR(20) UNIQUE,
+CREATE TABLE  sign_up_data (
+    user_id VARCHAR(20) primary key,
+    password varchar(20)
 );  
