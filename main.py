@@ -88,7 +88,7 @@ def login():
     left_frame.place(x = 10, y = 10)
     Border_frame = Frame(root, width = 1, height = 320, bg = 'white')
     Border_frame.place(x = 370 , y = 30 )
-    welcome_back = Label(left_frame , text = "Welcome back" , bg = bg_colour , fg = txt_cover , font = ("Bebas Neue" , 30 , 'bold'))
+    welcome_back = Label(left_frame , text = "Login" , bg = bg_colour , fg = txt_cover , font = ("Bebas Neue" , 35 , 'bold'))
     welcome_back.place(x = 50, y = 100)
     Startyourjourneytoday = Label(left_frame , text = "Best Toolbox ever 😅" , bg = bg_colour , fg = '#fff' , font = ("Microsoft YaHei UI light" , 15 ))
     Startyourjourneytoday.place(x = 70 , y = 160)
